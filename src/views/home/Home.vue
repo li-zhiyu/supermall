@@ -10,7 +10,7 @@
 <script>
     import NavBar from "components/common/navbar/NavBar";
     import HomeSwiper from "./childComps/HomeSwiper";
-    import {getHomeMultiData} from "network/Home";
+    import {getHomeMultiData} from "network/home";
 
     export default {
         name: "home",
