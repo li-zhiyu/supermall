@@ -13,9 +13,11 @@
         props: {
             probeType: {
                 type: Number,
-                default() {
-                    return 1
-                }
+                default: 1,//如果为数字或者对象要用函数default() {return []}
+            },
+            pullUpLoad: {
+                type: Boolean,
+                default: false,
             }
         },
         data() {
@@ -24,16 +26,22 @@
             }
         },
         mounted() {
+            //延迟保证dom加载完毕再创建BScroll
             setTimeout(()=>{
                 //创建scroll对象
                 this.bs = new BScroll(this.$refs.wrapper,{
-                    click: true,
-                    probeType: this.probeType
+                    click: true,//点击事件
+                    probeType: this.probeType,//滚动监听
+                    pullUpLoad: this.pullUpLoad,//上拉监听
+                    pullDownRefresh: false,//下拉监听
                 })
                 console.log(this.bs);
                 //监听滚动位置（probeType=3）
                 this.bs.on('scroll',(position) => {
                     this.$emit('contentScroll',position);
+                });
+                this.bs.on('pullingUp',() => {
+                    this.$emit('pullingUp');
                 })
             },1000)
             this.$nextTick(() => {
@@ -42,7 +50,14 @@
         methods: {
             scrollTo(x,y,time=500) {
                 this.bs.scrollTo(x,y,time)
+            },
+            pullUpFinished() {
+                this.bs.finishPullUp()
+            },
+            refresh() {
+                this.bs.refresh();
             }
+
         }
     }
 </script>

@@ -1,6 +1,6 @@
 <template>
     <div class="goods-item">
-        <img :src="goodsItem.show.img"/>
+        <img :src="goodsItem.show.img" @load="itemImageLoad"/>
         <div class="goods-info">
             <p>{{goodsItem.title}}</p>
             <span class="price">{{goodsItem.price}}</span>
@@ -18,6 +18,12 @@
                 default() {
                     return {}
                 }
+            }
+        },
+        methods: {
+            //图片加载完向事件总线发射事件
+            itemImageLoad() {
+                this.$bus.$emit('itemImageLoad');
             }
         }
     }

@@ -3,7 +3,12 @@
         <nav-bar class="home-nav">
             <div slot="center">精选</div>
         </nav-bar>
-        <scroll class="content" ref="content" :probe-type="1" @contentScroll="contentScroll">
+        <scroll class="content"
+                ref="content"
+                :probe-type="3"
+                @contentScroll="contentScroll"
+                :pull-up-load="true"
+                @pullingUp="loadMore">
             <home-swiper :banners="banners"/>
             <recommend-view :recommends="recommends"/>
             <feature-view/>
@@ -12,7 +17,7 @@
                          @tabClick="tabClick"/>
             <good-list :goods="showGoods"/>
         </scroll>
-        <back-top @click.native="backClick"/>
+        <back-top @click.native="backClick" v-show="isShowBackTop"/>
     </div>
 </template>
 
@@ -39,7 +44,8 @@
                     'new': {page: 0,list: []},
                     'sell': {page: 0,list: []},
                 },
-                currentType: 'pop'
+                currentType: 'pop',
+                isShowBackTop: false
             }
         },
         computed: {
@@ -54,6 +60,14 @@
             this.getHomeGoods('new');
             this.getHomeGoods('pop');
             this.getHomeGoods('sell');
+            //监听事件,图片加载完后刷新BScroll里的内容，结束本次上拉，下次上拉才会触发pullingUp
+            this.$bus.$on('itemImageLoad',() => {
+                // console.log(this.$refs.content.bs);
+                if (this.$refs.content.bs) {
+                    this.$refs.content.pullUpFinished();
+                    this.$refs.content.refresh();
+                }
+            })
         },
         methods: {
             /**
@@ -68,10 +82,10 @@
             },
             getHomeGoods(type) {
                 const page = this.goods[type].page+1
-                getHomeGoods(type,1).then(res => {
+                getHomeGoods(type,page).then(res => {
                     this.goods[type].list.push(...res.data.list);
                     this.goods[type].page=page
-                    console.log(this.goods[type]);
+                    // console.log(this.goods[type]);
                 })
             },
             /**
@@ -94,7 +108,10 @@
                 this.$refs.content.scrollTo(0,0)
             },
             contentScroll(position) {
-                console.log(position);
+                this.isShowBackTop = (-position.y) > 800;
+            },
+            loadMore() {
+                this.getHomeGoods(this.currentType);
             }
         }
     }
