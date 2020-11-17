@@ -3,13 +3,16 @@
         <nav-bar class="home-nav">
             <div slot="center">精选</div>
         </nav-bar>
-        <home-swiper :banners="banners"/>
-        <recommend-view :recommends="recommends"/>
-        <feature-view/>
-        <tab-control class="home-tab-control"
-                     :titles="['流行','新款','精选']"
-                     @tabClick="tabClick"/>
-        <good-list :goods="showGoods"/>
+        <scroll class="content" ref="content" :probe-type="1" @contentScroll="contentScroll">
+            <home-swiper :banners="banners"/>
+            <recommend-view :recommends="recommends"/>
+            <feature-view/>
+            <tab-control class="home-tab-control"
+                         :titles="['流行','新款','精选']"
+                         @tabClick="tabClick"/>
+            <good-list :goods="showGoods"/>
+        </scroll>
+        <back-top @click.native="backClick"/>
     </div>
 </template>
 
@@ -21,10 +24,12 @@
     import FeatureView from "./childComps/FeatureView";
     import TabControl from "../../components/content/tabControl/TabControl";
     import GoodList from "../../components/content/goods/GoodList";
+    import Scroll from "../../components/common/scroll/Scroll";
+    import BackTop from "../../components/content/backTop/BackTop";
 
     export default {
         name: "home",
-        components: {GoodList, TabControl, FeatureView, RecommendView, HomeSwiper, NavBar},
+        components: {BackTop, Scroll, GoodList, TabControl, FeatureView, RecommendView, HomeSwiper, NavBar},
         data() {
             return {
                 banners: [],
@@ -84,6 +89,12 @@
                         this.currentType = 'sell';
                         break;
                 }
+            },
+            backClick() {
+                this.$refs.content.scrollTo(0,0)
+            },
+            contentScroll(position) {
+                console.log(position);
             }
         }
     }
@@ -100,10 +111,19 @@
     }
     #home {
         margin-top: 44px;
+        height: 100vh;
     }
     .home-tab-control {
         position: sticky;
         top: 44px;
         z-index: 9;
+    }
+    .content {
+        position: absolute;
+        top: 44px;
+        bottom: 49px;
+        left: 0;
+        right: 0;
+        overflow: hidden;
     }
 </style>
