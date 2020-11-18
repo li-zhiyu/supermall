@@ -60,12 +60,15 @@
             this.getHomeGoods('new');
             this.getHomeGoods('pop');
             this.getHomeGoods('sell');
+        },
+        mounted() {
+            const refresh = this.debounce(this.$refs.content.refresh,300);
+            const pullUpFinished = this.debounce(this.$refs.content.pullUpFinished,300);
             //监听事件,图片加载完后刷新BScroll里的内容，结束本次上拉，下次上拉才会触发pullingUp
             this.$bus.$on('itemImageLoad',() => {
-                // console.log(this.$refs.content.bs);
-                if (this.$refs.content.bs) {
-                    this.$refs.content.pullUpFinished();
-                    this.$refs.content.refresh();
+                if (this.$refs.content) {
+                    pullUpFinished();
+                    refresh();
                 }
             })
         },
@@ -112,6 +115,20 @@
             },
             loadMore() {
                 this.getHomeGoods(this.currentType);
+            },
+            /**
+             * 防抖函数
+             */
+            debounce(func,delay) {
+                let timer = null;
+                return function(...args) {
+                    if (timer) {
+                        clearTimeout(timer)
+                    }
+                    timer = setTimeout(() => {
+                        func.apply(this,args)
+                    },delay)
+                }
             }
         }
     }
