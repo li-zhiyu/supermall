@@ -38,12 +38,17 @@
                     })
                     console.log(this.bs);
                     //监听滚动位置（probeType=3）
-                    this.bs.on('scroll',(position) => {
-                        this.$emit('contentScroll',position);
-                    });
-                    this.bs.on('pullingUp',() => {
-                        this.$emit('pullingUp');
-                    })
+                    if (this.probeType === 2 || this.probeType === 3) {
+                        this.bs.on('scroll',(position) => {
+                            this.$emit('contentScroll',position);
+                        });
+                    }
+                    //监听上拉
+                    if (this.pullUpLoad) {
+                        this.bs.on('pullingUp',() => {
+                            this.$emit('pullingUp');
+                        })
+                    }
                 }
             })
         },
@@ -76,11 +81,9 @@
                 this.bs && this.bs.scrollTo(x,y,time)
             },
             pullUpFinished() {
-                console.log('pullUpFinished');
                 this.bs && this.bs.finishPullUp()
             },
             refresh() {
-                console.log('refresh');
                 this.bs && this.bs.refresh();
             }
 
