@@ -31,6 +31,7 @@
     import GoodList from "../../components/content/goods/GoodList";
     import Scroll from "../../components/common/scroll/Scroll";
     import BackTop from "../../components/content/backTop/BackTop";
+    import {debounce} from "../../common/utils";
 
     export default {
         name: "home",
@@ -62,8 +63,8 @@
             this.getHomeGoods('sell');
         },
         mounted() {
-            const refresh = this.debounce(this.$refs.content.refresh,300);
-            const pullUpFinished = this.debounce(this.$refs.content.pullUpFinished,300);
+            const refresh = debounce(this.$refs.content.refresh,300);
+            const pullUpFinished = debounce(this.$refs.content.pullUpFinished,300);
             //监听事件,图片加载完后刷新BScroll里的内容，结束本次上拉，下次上拉才会触发pullingUp
             this.$bus.$on('itemImageLoad',() => {
                 if (this.$refs.content) {
@@ -116,20 +117,6 @@
             loadMore() {
                 this.getHomeGoods(this.currentType);
             },
-            /**
-             * 防抖函数
-             */
-            debounce(func,delay) {
-                let timer = null;
-                return function(...args) {
-                    if (timer) {
-                        clearTimeout(timer)
-                    }
-                    timer = setTimeout(() => {
-                        func.apply(this,args)
-                    },delay)
-                }
-            }
         }
     }
 </script>
