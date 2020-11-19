@@ -5,7 +5,7 @@ export function request(config) {
     const instance = axios.create({
         baseURL: 'http://106.54.54.237:8000/api/mn',
         timeout: 80000,
-        retry: 5, // 请求次数
+        retry: 2, // 请求次数
         retryInterval: 1000 // 求期间隙
     })
 
