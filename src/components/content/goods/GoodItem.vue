@@ -1,5 +1,5 @@
 <template>
-    <div class="goods-item">
+    <div class="goods-item" @click="itemClick">
         <img :src="goodsItem.show.img" @load="itemImageLoad"/>
         <div class="goods-info">
             <p>{{goodsItem.title}}</p>
@@ -24,6 +24,10 @@
             //图片加载完向事件总线发射事件
             itemImageLoad() {
                 this.$bus.$emit('itemImageLoad');
+            },
+            itemClick() {
+                console.log('itemClick');
+                this.$router.push('/detail/'+this.goodsItem.iid)
             }
         }
     }

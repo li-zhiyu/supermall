@@ -63,12 +63,12 @@
             }
         },
         created() {
-            //请求首页推荐轮播，推荐等数据
-            this.getHomeMultiData();
             //请求商品数据
             this.getHomeGoods('new');
             this.getHomeGoods('pop');
             this.getHomeGoods('sell');
+            //请求首页推荐轮播，推荐等数据
+            this.getHomeMultiData();
         },
         mounted() {
             const refresh = debounce(this.$refs.content.refresh,300);
@@ -79,14 +79,22 @@
                 }
             })
         },
+        //activated和deactivated只有在使用    <keep-alive>   才有效
+        activated() {
+            console.log('进入页面');
+        },
+        deactivated() {
+            console.log('离开页面');
+        },
         methods: {
             /**
              * 网络请求相关
              */
             getHomeMultiData() {
                 getHomeMultiData().then(res => {
-                        this.banners = res.data.banner.list
-                        this.recommends = res.data.recommend.list
+                    console.log(res.data.banner.list);
+                    this.banners = res.data.banner.list
+                    this.recommends = res.data.recommend.list
                     }
                 )
             },
@@ -135,6 +143,10 @@
 </script>
 
 <style scoped>
+    #home {
+/*        margin-top: 44px;*/
+        height: 100vh;
+    }
     .home-nav {
         background-color: #ff8198;
         /*position: fixed;*/
@@ -142,10 +154,6 @@
         /*right: 0;*/
         /*top: 0;*/
         /*z-index: 9;*/
-    }
-    #home {
-/*        margin-top: 44px;*/
-        height: 100vh;
     }
     .home-tab-control {
         position: relative;

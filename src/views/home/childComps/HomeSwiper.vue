@@ -1,6 +1,6 @@
 <template>
     <div>
-        <swiper>
+        <swiper ref="swiper">
             <swiper-item v-for="item in banners">
                 <a :href="item.link">
                     <img :src="item.image" @load="imageLoad">
@@ -36,6 +36,7 @@
                 if (!this.isLoad) {
                     this.$emit('imageLoad')
                     this.isLoad = true;
+                    this.$refs.swiper.addSlide();
                 }
             }
         }
