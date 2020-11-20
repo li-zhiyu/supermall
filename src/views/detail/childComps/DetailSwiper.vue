@@ -29,6 +29,7 @@
                 if (!this.isLoad) {
                     this.$refs.swiper.addSlide();
                     this.isLoad = true;
+                    this.$bus.$emit('itemImageLoad');
                 }
             }
         }
